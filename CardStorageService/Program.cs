@@ -1,11 +1,21 @@
 using CardStorageService.Data;
+using CardStorageService.Services.Impl;
+using CardStorageService.Services;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using NLog.Web;
+using CardStorageService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region Configure Options Services
 
+builder.Services.Configure<DatabaseOptions>(options =>
+{
+    builder.Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+});
+
+#endregion
 
 #region Logging service
 
@@ -36,6 +46,13 @@ builder.Services.AddDbContext<CardStorageServiceDbContext>(options =>
 
     options.UseSqlServer(builder.Configuration["Settings:DatabaseOptions:ConnectionString"]);
 });
+
+#endregion
+
+#region Configure Repository Services
+
+builder.Services.AddScoped<IClientRepositoryService, ClientRepository>();
+builder.Services.AddScoped<ICardRepositoryService, CardRepository>();
 
 #endregion
 
