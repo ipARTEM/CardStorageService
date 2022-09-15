@@ -1,4 +1,6 @@
+using CardStorageService.Data;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +28,16 @@ builder.Host.ConfigureLogging(logging =>
 
 #endregion
 
+
+#region Confugure EF DBContext Service (CardStorageService Database)
+
+builder.Services.AddDbContext<CardStorageServiceDbContext>(options =>
+{
+
+    options.UseSqlServer(builder.Configuration["Settings:DatabaseOptions:ConnectionString"]);
+});
+
+#endregion
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
